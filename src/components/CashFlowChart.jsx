@@ -47,14 +47,14 @@ export default function CashFlowChart() {
             <Bar 
               name="Inflow" 
               dataKey="inflow" 
-              fill="#10B981" 
+              fill="#5273d0" 
               radius={[4, 4, 0, 0]} 
               barSize={18}
             />
             <Bar 
               name="Outflow" 
               dataKey="outflow" 
-              fill="#F59E0B" 
+              fill="#afb8c7" 
               radius={[4, 4, 0, 0]} 
               barSize={18}
             />

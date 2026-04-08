@@ -1,6 +1,9 @@
 import { NavLink } from "react-router-dom";
 
 export default function Sidebar() {
+  const user = JSON.parse(localStorage.getItem('user'));
+  const isAdmin = user?.role === 'Admin';
+
   return (
     <div className="fixed left-0 top-0 h-full w-64 bg-blue-950 text-white shadow-lg z-50 overflow-y-auto">
 
@@ -16,34 +19,42 @@ export default function Sidebar() {
         <SidebarItem title="Dashboard" path="/" />
 
         {/* FINANCIAL ACCOUNTING */}
-        <Section title="Financial Accounting" />
-        <SidebarItem title="General Ledger" path="/ledger" />
-        <SidebarItem title="Accounts Payable" path="/accounts-payable" />
-        <SidebarItem title="Accounts Receivable" path="/accounts-receivable" />
-        <SidebarItem title="Bank Accounting" path="/bank-accounts" />
-        <SidebarItem title="Fixed Assets" path="/fixed-assets" />
-        <SidebarItem title="Cash Management" path="/cash-management" />
+        {isAdmin && (
+          <>
+            <Section title="Master Data" />
+            <SidebarItem title="Business Partners" path="/business-partners" />
+            <SidebarItem title="Chart of Accounts" path="/chart-of-accounts" />
+            <SidebarItem title="Fixed Assets" path="/fixed-assets" />
+          </>
+        )}
 
         {/* TRANSACTIONS */}
         <Section title="Transactions" />
         <SidebarItem title="Payment Entry" path="/payment-entry" />
         <SidebarItem title="Receipt Entry" path="/receipt-entry" />
         <SidebarItem title="Journal Entry" path="/journal-entry" />
-        <SidebarItem title="Bank Reconciliation" path="/bank-reconciliation" />
+        {isAdmin && <SidebarItem title="Bank Reconciliation" path="/bank-reconciliation" />}
 
         {/* REPORTS */}
         <Section title="Reports" />
-        <SidebarItem title="Financial Statements" path="/financial-statements" />
-        <SidebarItem title="General Ledger Report" path="/general-ledger-report" />
         <SidebarItem title="Cash Book" path="/cash-book" />
         <SidebarItem title="Bank Book" path="/bank-book" />
         <SidebarItem title="Trial Balance" path="/trial-balance" />
+        
+        {isAdmin && (
+          <>
+            <SidebarItem title="Financial Statements" path="/financial-statements" />
+            <SidebarItem title="General Ledger Report" path="/general-ledger-report" />
+          </>
+        )}
 
-        {/* MASTER DATA */}
-        <Section title="Master Data" />
-        <SidebarItem title="Business Partners" path="/business-partners" />
-        <SidebarItem title="Chart of Accounts" path="/chart-of-accounts" />
-
+        {isAdmin && (
+          <>
+            <Section title="Administration" />
+            <SidebarItem title="User Management" path="/users" />
+            <SidebarItem title="System Logs" path="/activities" />
+          </>
+        )}
       </div>
     </div>
   );

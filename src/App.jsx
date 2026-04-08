@@ -1,5 +1,6 @@
 import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
+
 import Dashboard from "./pages/Dashboard";
 import ActivitiesPage from "./pages/ActivitiesPage";
 import WorklistPage from "./pages/WorklistPage";
@@ -18,46 +19,103 @@ import FinancialStatements from "./pages/FinancialStatements";
 import GeneralLedgerReport from "./pages/GeneralLedgerReport";
 import CashBook from "./pages/CashBook";
 import BankBook from "./pages/BankBook";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
 import BankReconciliation from "./pages/BankReconciliation";
 import ChartOfAccounts from "./pages/ChartOfAccount";
+import Profile from "./pages/Profile";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import Unauthorized from "./pages/Unauthorized";
+import AccountSettings from "./pages/AccountSettings";   // ✅ NEW
 
+import ProtectedRoute from "./routes/ProtectedRoute";
+
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+
+// --------------------------
+// LAYOUT HANDLING COMPONENT
+// --------------------------
+const AppContent = () => {
+  const location = useLocation();
+
+  const hideLayoutRoutes = ["/login", "/signup"];
+
+  const showLayout = !hideLayoutRoutes.includes(location.pathname);
+
+  return (
+    <div className={showLayout ? "ml-64 pt-16" : ""}>
+      {showLayout && (
+        <>
+          <div className="fixed left-0 top-0 h-full w-64 bg-white shadow-lg z-50">
+            <Sidebar />
+          </div>
+          <Header />
+        </>
+      )}
+
+      <Routes>
+
+        {/* Auth Routes */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/unauthorized" element={<Unauthorized />} />
+
+        {/* Dashboard */}
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Profile */}
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* ✅ NEW — ACCOUNT SETTINGS */}
+        <Route
+          path="/account-settings"
+          element={
+            <ProtectedRoute>
+              <AccountSettings />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Accountant + Admin Routes */}
+        <Route path="/payment-entry" element={<ProtectedRoute><PaymentEntry /></ProtectedRoute>} />
+        <Route path="/receipt-entry" element={<ProtectedRoute><ReceiptEntry /></ProtectedRoute>} />
+        <Route path="/journal-entry" element={<ProtectedRoute><JournalEntry /></ProtectedRoute>} />
+        <Route path="/cash-book" element={<ProtectedRoute><CashBook /></ProtectedRoute>} />
+        <Route path="/bank-book" element={<ProtectedRoute><BankBook /></ProtectedRoute>} />
+        <Route path="/trial-balance" element={<ProtectedRoute><TrialBalance /></ProtectedRoute>} />
+
+        {/* Admin Only */}
+        <Route path="/ledger" element={<ProtectedRoute allowedRoles={["Admin"]}><Ledger /></ProtectedRoute>} />
+        <Route path="/business-partners" element={<ProtectedRoute allowedRoles={["Admin"]}><BusinessPartners /></ProtectedRoute>} />
+        <Route path="/chart-of-accounts" element={<ProtectedRoute allowedRoles={["Admin"]}><ChartOfAccounts /></ProtectedRoute>} />
+        <Route path="/fixed-assets" element={<ProtectedRoute allowedRoles={["Admin"]}><FixedAssets /></ProtectedRoute>} />
+        <Route path="/financial-statements" element={<ProtectedRoute allowedRoles={["Admin"]}><FinancialStatements /></ProtectedRoute>} />
+
+      </Routes>
+    </div>
+  );
+};
+
+// ----------------------
+// WRAPPER APP FUNCTION
+// ----------------------
 function App() {
   return (
     <BrowserRouter>
-      <div>
-        {/* FIXED SIDEBAR */}
-        <div className="fixed left-0 top-0 h-full w-64 bg-white shadow-lg z-50">
-          <Sidebar />
-        </div>
-
-        {/* MAIN CONTENT SHIFTED BY SIDEBAR */}
-        <div className="ml-64 pt-16">
-          <Header />
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/ledger" element={<Ledger />} />
-            <Route path="/accounts-payable" element={<AccountsPayable />} />
-            <Route path="/accounts-receivable" element={<AccountsReceivable />} />
-            <Route path="/fixed-assets" element={<FixedAssets />} />
-            <Route path="/bank-accounts" element={<BankAccounts />} />
-            <Route path="/activities" element={<ActivitiesPage />} />
-            <Route path="/worklist" element={<WorklistPage />} />
-            <Route path="/cash-management" element={<CashManagement />} />
-            <Route path="/payment-entry" element={<PaymentEntry />} />
-            <Route path="/receipt-entry" element={<ReceiptEntry />} />
-            <Route path="/journal-entry" element={<JournalEntry />} />
-            <Route path="/bank-reconciliation" element={<BankReconciliation />} />
-            <Route path="/financial-statements" element={<FinancialStatements />} />
-            <Route path="/general-ledger-report" element={<GeneralLedgerReport />} />
-            <Route path="/cash-book" element={<CashBook />} />
-            <Route path="/bank-book" element={<BankBook />} />
-            <Route path="/trial-balance" element={<TrialBalance/>} />
-            <Route path="/business-partners" element={<BusinessPartners />} />
-            <Route path="/chart-of-accounts" element={<ChartOfAccounts />} />
-          </Routes>
-        </div>
-      </div>
+      <AppContent />
     </BrowserRouter>
   );
 }

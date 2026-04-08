@@ -3,12 +3,16 @@ import CashFlowChart from "../components/CashFlowChart";
 import ExpensePieChart from "../components/ExpensePieChart";
 import BottomButtons from "../components/BottomButtons";
 import RecentActivities from "../components/RecentActivities";
-import { FiArrowUpRight, FiArrowDownLeft, FiDollarSign, FiBriefcase, FiAlertCircle } from "react-icons/fi";
 import { Link } from "react-router-dom";
 
 export default function Dashboard() {
+  const user = JSON.parse(localStorage.getItem('user'));
+  const isAdmin = user?.role === 'Admin';
+
   return (
     <div className="p-6 bg-lightBg min-h-screen">
+
+      <h1 className="text-xl font-bold text-gray-800 mb-6">Welcome back, {user?.name} ({user?.role})</h1>
 
       {/* STAT CARDS */}
       <div className="grid grid-cols-5 gap-4 mb-6">
@@ -16,29 +20,31 @@ export default function Dashboard() {
           title="Total Payables" 
           value="5.20 M" 
           change="+8.5%" 
-          icon={<FiArrowUpRight size={28} />} 
+          icon={<img src="https://img.freepik.com/premium-vector/vector-design-growth-icon-style_1134108-95628.jpg?semt=ais_rp_progressive&w=740&q=80" alt="" className="w-14 h-12 object-contain" />} 
           bgColor="bg-orange-50" 
           iconColor="text-orange-600"
         />
+        {isAdmin && (
         <StatCard 
           title="Total Receivables" 
           value="3.80 M" 
           change="+12.3%" 
-          icon={<FiArrowDownLeft size={28} />} 
+          icon={<img src="https://cdn-icons-png.flaticon.com/512/5562/5562807.png" alt="" className="w-14 h-12 object-contain" />} 
           bgColor="bg-green-50" 
           iconColor="text-green-600"
         />
+        )}
         <StatCard 
           title="Bank Balance" 
           value="8.75 M" 
           change="+4.2%" 
-          icon={<FiDollarSign size={28} />} 
+          icon={<img src="https://img.freepik.com/premium-vector/bank-icon-vector-image-can-be-used-banking-finance_120816-210233.jpg" alt="" className="w-14 h-12 object-contain" />} 
         />
         <StatCard 
           title="Cash in Hand" 
           value="1.25 M" 
           change="-2.1%" 
-          icon={<FiBriefcase size={28} />} 
+          icon={<img src="https://cdn-icons-png.flaticon.com/512/9203/9203508.png" alt="" className="w-14 h-12 object-contain" />} 
           bgColor="bg-teal-50" 
           iconColor="text-teal-600"
         />
@@ -46,13 +52,14 @@ export default function Dashboard() {
           title="Outstanding Amount" 
           value="1.40 M" 
           change="+9.7%" 
-          icon={<FiAlertCircle size={28} />} 
+          icon={<img src="https://img.freepik.com/premium-vector/accounting-period-icon-vector-image-can-be-used-accounting_120816-252990.jpg?w=360" alt="" className="w-14 h-12 object-contain" />} 
           bgColor="bg-purple-50" 
           iconColor="text-purple-600"
         />
       </div>
 
       {/* CHARTS ROW: CASH FLOW & EXPENSES */}
+      {isAdmin && (
       <div className="flex flex-col lg:flex-row gap-6">
         <div className="flex-[2]">
           <CashFlowChart />
@@ -61,6 +68,7 @@ export default function Dashboard() {
           <ExpensePieChart />
         </div>
       </div>
+      )}
 
       {/* WORKLIST, BALANCES & ACTIVITIES */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mt-5">
